@@ -1,44 +1,122 @@
+/* Estilos Globales */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
 }
 
 .container {
-    width: 80%;
-    margin: 0 auto;
+    margin-top: 30px;
+    background-color: #ffffff;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Títulos */
 h1 {
-    color: #333;
+    color: #343a40;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
+h2 {
+    color: #495057;
+    margin-top: 30px;
+}
+
+/* Formularios */
 form {
-    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
+form label {
+    font-weight: bold;
+    color: #212529;
 }
 
-input[type="text"], input[type="date"] {
+form input[type="text"],
+form input[type="number"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
+    margin: 10px 0;
+    border: 1px solid #ced4da;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    font-size: 14px;
 }
 
-input[type="submit"] {
-    padding: 10px 20px;
+form input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Botón */
+button {
+    display: block;
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007BFF;
-    color: #fff;
     cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Sección de resultados */
+#inscripcionesList {
+    margin-top: 20px;
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#inscripcionesList div {
+    margin-bottom: 10px;
+}
+
+#inscripcionesList hr {
+    border-top: 1px solid #ced4da;
+}
+
+p {
+    margin: 0;
+    color: #495057;
+    font-size: 14px;
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+    form input[type="text"],
+    form input[type="number"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    form input[type="submit"],
+    button {
+        font-size: 14px;
+    }
 }
