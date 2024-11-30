@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Profesores</title>
+    <link rel="stylesheet" type="text/css" href="styless_5_prof.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gestión de Profesores</h1>
+
+        <!-- Formulario para Crear Profesor -->
+        <h2>Registrar Profesor</h2>
+        <form id="profesorFormCreate">
+            <label for="create_id_p">ID Profesor:</label><br>
+            <input type="text" id="create_id_p" name="create_id_p" required><br>
+            <label for="create_nom_p">Nombre:</label><br>
+            <input type="text" id="create_nom_p" name="create_nom_p" required><br>
+            <label for="create_dir_p">Dirección:</label><br>
+            <input type="text" id="create_dir_p" name="create_dir_p" required><br>
+            <label for="create_tel_p">Teléfono:</label><br>
+            <input type="text" id="create_tel_p" name="create_tel_p" required><br>
+            <label for="create_profesion">Profesión:</label><br>
+            <input type="text" id="create_profesion" name="create_profesion" required><br>
+            <input type="submit" value="Registrar">
+        </form>
+
+        <!-- Formulario para Obtener Profesor -->
+        <h2>Buscar Profesor</h2>
+        <form id="profesorFormGet">
+            <label for="get_id_p">ID del Profesor:</label><br>
+            <input type="text" id="get_id_p" name="get_id_p" required><br>
+            <input type="submit" value="Buscar">
+        </form>
+
+        <!-- Formulario para Actualizar Profesor -->
+        <h2>Actualizar Profesor</h2>
+        <form id="profesorFormUpdate">
+            <label for="update_id_p">ID Profesor:</label><br>
+            <input type="text" id="update_id_p" name="update_id_p" required><br>
+            <label for="update_nom_p">Nombre:</label><br>
+            <input type="text" id="update_nom_p" name="update_nom_p" required><br>
+            <label for="update_dir_p">Dirección:</label><br>
+            <input type="text" id="update_dir_p" name="update_dir_p" required><br>
+            <label for="update_tel_p">Teléfono:</label><br>
+            <input type="text" id="update_tel_p" name="update_tel_p" required><br>
+            <label for="update_profesion">Profesión:</label><br>
+            <input type="text" id="update_profesion" name="update_profesion" required><br>
+            <input type="submit" value="Actualizar">
+        </form>
+
+        <!-- Formulario para Eliminar Profesor -->
+        <h2>Eliminar Profesor</h2>
+        <form id="profesorFormDelete">
+            <label for="delete_id_p">ID del Profesor:</label><br>
+            <input type="text" id="delete_id_p" name="delete_id_p" required><br>
+            <input type="submit" value="Eliminar">
+        </form>
+
+        <!-- Botón para Obtener Todos los Profesores -->
+        <h2>Obtener Todos los Profesores</h2>
+        <button id="profesorFormGetAll">Listar Profesores</button>
+    </div>
+
+    <script>
+        // CREATE
+        document.getElementById('profesorFormCreate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const profesor = {
+                id_p: document.getElementById('create_id_p').value,
+                nom_p: document.getElementById('create_nom_p').value,
+                dir_p: document.getElementById('create_dir_p').value,
+                tel_p: document.getElementById('create_tel_p').value,
+                profesion: document.getElementById('create_profesion').value,
+            };
+
+            fetch('http://127.0.0.1:3000/profesores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profesor),
+            })
+                .then(response => response.json())
+                .then(data => alert('Profesor registrado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al registrar: ' + error));
+        });
+
+        // READ
+        document.getElementById('profesorFormGet').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const id_p = document.getElementById('get_id_p').value;
+
+            fetch(`http://127.0.0.1:3000/profesores/${id_p}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    // Si el profesor es encontrado, llenar el formulario de actualización con los datos
+                    if (data && data.data) {
+                        const profesor = data.data;
+                        document.getElementById('update_id_p').value = profesor.id_p;
+                        document.getElementById('update_nom_p').value = profesor.nom_p;
+                        document.getElementById('update_dir_p').value = profesor.dir_p;
+                        document.getElementById('update_tel_p').value = profesor.tel_p;
+                        document.getElementById('update_profesion').value = profesor.profesion;
+                    } else {
+                        alert('Profesor no encontrado.');
+                    }
+                })
+                .catch(error => alert('Error al buscar profesor: ' + error));
+        });
+
+        // UPDATE
+        document.getElementById('profesorFormUpdate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const profesor = {
+                id_p: document.getElementById('update_id_p').value,
+                nom_p: document.getElementById('update_nom_p').value,
+                dir_p: document.getElementById('update_dir_p').value,
+                tel_p: document.getElementById('update_tel_p').value,
+                profesion: document.getElementById('update_profesion').value,
+            };
+
+            fetch(`http://127.0.0.1:3000/profesores/${profesor.id_p}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profesor),
+            })
+                .then(response => response.json())
+                .then(data => alert('Profesor actualizado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al actualizar: ' + error));
+        });
+
+        // DELETE
+        document.getElementById('profesorFormDelete').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const id_p = document.getElementById('delete_id_p').value;
+
+            fetch(`http://127.0.0.1:3000/profesores/${id_p}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => alert('Profesor eliminado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al eliminar: ' + error));
+        });
+
+        // GET ALL
+        document.getElementById('profesorFormGetAll').addEventListener('click', function () {
+            fetch('http://127.0.0.1:3000/profesores', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const profesoresList = document.getElementById('profesoresList');
+                        profesoresList.innerHTML = ''; // Limpiar la lista previa
+
+                        data.forEach(profesor => {
+                            const profesorItem = document.createElement('div');
+                            profesorItem.innerHTML = `
+                                <p><strong>ID:</strong> ${profesor.id_p}</p>
+                                <p><strong>Nombre:</strong> ${profesor.nom_p}</p>
+                                <p><strong>Dirección:</strong> ${profesor.dir_p}</p>
+                                <p><strong>Teléfono:</strong> ${profesor.tel_p}</p>
+                                <p><strong>Profesión:</strong> ${profesor.profesion}</p>
+                                <hr>
+                            `;
+                            profesoresList.appendChild(profesorItem);
+                        });
+                    } else {
+                        alert('No se encontraron profesores.');
+                    }
+                })
+                .catch(error => alert('Error al listar profesores: ' + error));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estudiantes</title>
+    <link rel="stylesheet" type="text/css" href="styless_1_est.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gestión de Estudiantes</h1>
+
+        <!-- Formulario para Crear Estudiante -->
+        <h2>Registrar Estudiante</h2>
+        <form id="estudianteFormCreate">
+            <label for="create_cod_e">Código:</label><br>
+            <input type="text" id="create_cod_e" name="create_cod_e" required><br>
+            <label for="create_nom_e">Nombre:</label><br>
+            <input type="text" id="create_nom_e" name="create_nom_e" required><br>
+            <label for="create_dir_e">Dirección:</label><br>
+            <input type="text" id="create_dir_e" name="create_dir_e" required><br>
+            <label for="create_tel_e">Teléfono:</label><br>
+            <input type="text" id="create_tel_e" name="create_tel_e" required><br>
+            <label for="create_fech_nac">Fecha de Nacimiento:</label><br>
+            <input type="date" id="create_fech_nac" name="create_fech_nac" required><br>
+            <input type="submit" value="Registrar">
+        </form>
+
+        <!-- Formulario para Obtener Estudiante -->
+        <h2>Buscar Estudiante</h2>
+        <form id="estudianteFormGet">
+            <label for="get_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="get_cod_e" name="get_cod_e" required><br>
+            <input type="submit" value="Buscar">
+        </form>
+
+        <!-- Formulario para Actualizar Estudiante -->
+        <h2>Actualizar Estudiante</h2>
+        <form id="estudianteFormUpdate">
+            <label for="update_cod_e">Código:</label><br>
+            <input type="text" id="update_cod_e" name="update_cod_e" required><br>
+            <label for="update_nom_e">Nombre:</label><br>
+            <input type="text" id="update_nom_e" name="update_nom_e" required><br>
+            <label for="update_dir_e">Dirección:</label><br>
+            <input type="text" id="update_dir_e" name="update_dir_e" required><br>
+            <label for="update_tel_e">Teléfono:</label><br>
+            <input type="text" id="update_tel_e" name="update_tel_e" required><br>
+            <label for="update_fech_nac">Fecha de Nacimiento:</label><br>
+            <input type="date" id="update_fech_nac" name="update_fech_nac" required><br>
+            <input type="submit" value="Actualizar">
+        </form>
+
+        <!-- Formulario para Eliminar Estudiante -->
+        <h2>Eliminar Estudiante</h2>
+        <form id="estudianteFormDelete">
+            <label for="delete_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="delete_cod_e" name="delete_cod_e" required><br>
+            <input type="submit" value="Eliminar">
+        </form>
+
+        <!-- Botón para Obtener Todos los Estudiantes -->
+        <h2>Obtener Todos los Estudiantes</h2>
+        <button id="estudianteFormGetAll">Listar Estudiantes</button>
+    </div>
+
+    <script>
+        // CREATE
+        document.getElementById('estudianteFormCreate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const estudiante = {
+                cod_e: document.getElementById('create_cod_e').value,
+                nom_e: document.getElementById('create_nom_e').value,
+                dir_e: document.getElementById('create_dir_e').value,
+                tel_e: document.getElementById('create_tel_e').value,
+                fech_nac: document.getElementById('create_fech_nac').value,
+            };
+
+            fetch('http://127.0.0.1:3000/estudiantes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(estudiante),
+            })
+                .then(response => response.json())
+                .then(data => alert('Estudiante registrado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al registrar: ' + error));
+        });
+
+        // READ
+        document.getElementById('estudianteFormGet').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_e = document.getElementById('get_cod_e').value;
+
+            fetch(`http://127.0.0.1:3000/estudiantes/${cod_e}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    // Si el estudiante es encontrado, llenar el formulario de actualización con los datos
+                    if (data && data.data) {
+                        const estudiante = data.data;
+                        document.getElementById('update_cod_e').value = estudiante.cod_e;
+                        document.getElementById('update_nom_e').value = estudiante.nom_e;
+                        document.getElementById('update_dir_e').value = estudiante.dir_e;
+                        document.getElementById('update_tel_e').value = estudiante.tel_e;
+                        document.getElementById('update_fech_nac').value = estudiante.fech_nac;
+                    } else {
+                        alert('Estudiante no encontrado.');
+                    }
+                })
+                .catch(error => alert('Error al buscar estudiante: ' + error));
+        });
+
+        // UPDATE
+        document.getElementById('estudianteFormUpdate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const estudiante = {
+                cod_e: document.getElementById('update_cod_e').value,
+                nom_e: document.getElementById('update_nom_e').value,
+                dir_e: document.getElementById('update_dir_e').value,
+                tel_e: document.getElementById('update_tel_e').value,
+                fech_nac: document.getElementById('update_fech_nac').value,
+            };
+
+            fetch(`http://127.0.0.1:3000/estudiantes/${estudiante.cod_e}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(estudiante),
+            })
+                .then(response => response.json())
+                .then(data => alert('Estudiante actualizado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al actualizar: ' + error));
+        });
+
+        // DELETE
+        document.getElementById('estudianteFormDelete').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_e = document.getElementById('delete_cod_e').value;
+
+            fetch(`http://127.0.0.1:3000/estudiantes/${cod_e}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => alert('Estudiante eliminado: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al eliminar: ' + error));
+        });
+
+        // GET ALL
+        // GET ALL
+    document.getElementById('estudianteFormGetAll').addEventListener('click', function () {
+        fetch('http://127.0.0.1:3000/estudiantes', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                // Verificar si se obtuvo correctamente la lista
+                if (data && data.length > 0) {
+                    // Limpiar la lista previa
+                    const estudiantesList = document.getElementById('estudiantesList');
+                    estudiantesList.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                    // Recorrer los estudiantes y agregarlos al contenedor
+                    data.forEach(estudiante => {
+                        const estudianteItem = document.createElement('div');
+                        estudianteItem.innerHTML = `
+                            <p><strong>Código:</strong> ${estudiante.cod_e}</p>
+                            <p><strong>Nombre:</strong> ${estudiante.nom_e}</p>
+                            <p><strong>Dirección:</strong> ${estudiante.dir_e}</p>
+                            <p><strong>Teléfono:</strong> ${estudiante.tel_e}</p>
+                            <p><strong>Fecha de Nacimiento:</strong> ${estudiante.fech_nac}</p>
+                            <hr>
+                        `;
+                        estudiantesList.appendChild(estudianteItem);
+                    });
+                } else {
+                    alert('No se encontraron estudiantes.');
+                }
+            })
+            .catch(error => alert('Error al listar estudiantes: ' + error));
+    });
+    </script>
+</body>
+
+</html>

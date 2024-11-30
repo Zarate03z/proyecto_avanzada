@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Asignaturas</title>
+    <link rel="stylesheet" type="text/css" href="styless_4_imp.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gestión de Asignaturas</h1>
+
+        <!-- Formulario para Crear Imparte -->
+        <h2>Registrar Asignatura</h2>
+        <form id="imparteFormCreate">
+            <label for="create_id_p">ID Profesor:</label><br>
+            <input type="text" id="create_id_p" name="create_id_p" required><br>
+            <label for="create_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="create_cod_a" name="create_cod_a" required><br>
+            <label for="create_grupo">Grupo:</label><br>
+            <input type="text" id="create_grupo" name="create_grupo" required><br>
+            <label for="create_horario">Horario:</label><br>
+            <input type="text" id="create_horario" name="create_horario" required><br>
+            <input type="submit" value="Registrar">
+        </form>
+
+        <!-- Formulario para Obtener Imparte -->
+        <h2>Buscar Asignatura</h2>
+        <form id="imparteFormGet">
+            <label for="get_id_p">ID Profesor:</label><br>
+            <input type="text" id="get_id_p" name="get_id_p" required><br>
+            <label for="get_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="get_cod_a" name="get_cod_a" required><br>
+            <input type="submit" value="Buscar">
+        </form>
+
+        <!-- Formulario para Actualizar Imparte -->
+        <h2>Actualizar Asignatura</h2>
+        <form id="imparteFormUpdate">
+            <label for="update_id_p">ID Profesor:</label><br>
+            <input type="text" id="update_id_p" name="update_id_p" required><br>
+            <label for="update_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="update_cod_a" name="update_cod_a" required><br>
+            <label for="update_grupo">Grupo:</label><br>
+            <input type="text" id="update_grupo" name="update_grupo" required><br>
+            <label for="update_horario">Horario:</label><br>
+            <input type="text" id="update_horario" name="update_horario" required><br>
+            <input type="submit" value="Actualizar">
+        </form>
+
+        <!-- Formulario para Eliminar Imparte -->
+        <h2>Eliminar Asignatura</h2>
+        <form id="imparteFormDelete">
+            <label for="delete_id_p">ID Profesor:</label><br>
+            <input type="text" id="delete_id_p" name="delete_id_p" required><br>
+            <label for="delete_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="delete_cod_a" name="delete_cod_a" required><br>
+            <input type="submit" value="Eliminar">
+        </form>
+
+        <!-- Botón para Obtener Todas las Asignaturas -->
+        <h2>Obtener Todas las Asignaturas</h2>
+        <button id="imparteFormGetAll">Listar Asignaturas</button>
+    </div>
+
+    <script>
+        // CREATE
+        document.getElementById('imparteFormCreate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const imparte = {
+                id_p: document.getElementById('create_id_p').value,
+                cod_a: document.getElementById('create_cod_a').value,
+                grupo: document.getElementById('create_grupo').value,
+                horario: document.getElementById('create_horario').value,
+            };
+
+            fetch('http://127.0.0.1:3000/imparte', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(imparte),
+            })
+                .then(response => response.json())
+                .then(data => alert('Asignatura registrada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al registrar: ' + error));
+        });
+
+        // READ
+        document.getElementById('imparteFormGet').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const id_p = document.getElementById('get_id_p').value;
+            const cod_a = document.getElementById('get_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/imparte/${id_p}/${cod_a}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.data) {
+                        const imparte = data.data;
+                        document.getElementById('update_id_p').value = imparte.id_p;
+                        document.getElementById('update_cod_a').value = imparte.cod_a;
+                        document.getElementById('update_grupo').value = imparte.grupo;
+                        document.getElementById('update_horario').value = imparte.horario;
+                    } else {
+                        alert('Asignatura no encontrada.');
+                    }
+                })
+                .catch(error => alert('Error al buscar asignatura: ' + error));
+        });
+
+        // UPDATE
+        document.getElementById('imparteFormUpdate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const imparte = {
+                id_p: document.getElementById('update_id_p').value,
+                cod_a: document.getElementById('update_cod_a').value,
+                grupo: document.getElementById('update_grupo').value,
+                horario: document.getElementById('update_horario').value,
+            };
+
+            fetch(`http://127.0.0.1:3000/imparte/${imparte.id_p}/${imparte.cod_a}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(imparte),
+            })
+                .then(response => response.json())
+                .then(data => alert('Asignatura actualizada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al actualizar: ' + error));
+        });
+
+        // DELETE
+        document.getElementById('imparteFormDelete').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const id_p = document.getElementById('delete_id_p').value;
+            const cod_a = document.getElementById('delete_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/imparte/${id_p}/${cod_a}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => alert('Asignatura eliminada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al eliminar: ' + error));
+        });
+
+        // GET ALL
+        document.getElementById('imparteFormGetAll').addEventListener('click', function () {
+            fetch('http://127.0.0.1:3000/imparte', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const imparteList = document.getElementById('imparteList');
+                        imparteList.innerHTML = '';
+
+                        data.forEach(imparte => {
+                            const imparteItem = document.createElement('div');
+                            imparteItem.innerHTML = `
+                                <p><strong>ID Profesor:</strong> ${imparte.id_p}</p>
+                                <p><strong>Código Asignatura:</strong> ${imparte.cod_a}</p>
+                                <p><strong>Grupo:</strong> ${imparte.grupo}</p>
+                                <p><strong>Horario:</strong> ${imparte.horario}</p>
+                                <hr>
+                            `;
+                            imparteList.appendChild(imparteItem);
+                        });
+                    } else {
+                        alert('No se encontraron asignaturas.');
+                    }
+                })
+                .catch(error => alert('Error al listar asignaturas: ' + error));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Asignaturas</title>
+    <link rel="stylesheet" type="text/css" href="styless_2_asig.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gestión de Asignaturas</h1>
+
+        <!-- Formulario para Crear Asignatura -->
+        <h2>Registrar Asignatura</h2>
+        <form id="asignaturaFormCreate">
+            <label for="create_cod_a">Código:</label><br>
+            <input type="text" id="create_cod_a" name="create_cod_a" required><br>
+            <label for="create_nom_a">Nombre:</label><br>
+            <input type="text" id="create_nom_a" name="create_nom_a" required><br>
+            <label for="create_int_h">Horas de Instrucción:</label><br>
+            <input type="number" id="create_int_h" name="create_int_h" required><br>
+            <label for="create_creditos">Créditos:</label><br>
+            <input type="number" id="create_creditos" name="create_creditos" required><br>
+            <input type="submit" value="Registrar">
+        </form>
+
+        <!-- Formulario para Obtener Asignatura -->
+        <h2>Buscar Asignatura</h2>
+        <form id="asignaturaFormGet">
+            <label for="get_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="get_cod_a" name="get_cod_a" required><br>
+            <input type="submit" value="Buscar">
+        </form>
+
+        <!-- Formulario para Actualizar Asignatura -->
+        <h2>Actualizar Asignatura</h2>
+        <form id="asignaturaFormUpdate">
+            <label for="update_cod_a">Código:</label><br>
+            <input type="text" id="update_cod_a" name="update_cod_a" required><br>
+            <label for="update_nom_a">Nombre:</label><br>
+            <input type="text" id="update_nom_a" name="update_nom_a" required><br>
+            <label for="update_int_h">Horas de Instrucción:</label><br>
+            <input type="number" id="update_int_h" name="update_int_h" required><br>
+            <label for="update_creditos">Créditos:</label><br>
+            <input type="number" id="update_creditos" name="update_creditos" required><br>
+            <input type="submit" value="Actualizar">
+        </form>
+
+        <!-- Formulario para Eliminar Asignatura -->
+        <h2>Eliminar Asignatura</h2>
+        <form id="asignaturaFormDelete">
+            <label for="delete_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="delete_cod_a" name="delete_cod_a" required><br>
+            <input type="submit" value="Eliminar">
+        </form>
+
+        <!-- Botón para Obtener Todas las Asignaturas -->
+        <h2>Obtener Todas las Asignaturas</h2>
+        <button id="asignaturaFormGetAll">Listar Asignaturas</button>
+    </div>
+
+    <script>
+        // CREATE
+        document.getElementById('asignaturaFormCreate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const asignatura = {
+                cod_a: document.getElementById('create_cod_a').value,
+                nom_a: document.getElementById('create_nom_a').value,
+                int_h: document.getElementById('create_int_h').value,
+                creditos: document.getElementById('create_creditos').value,
+            };
+
+            fetch('http://127.0.0.1:3000/asignaturas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(asignatura),
+            })
+                .then(response => response.json())
+                .then(data => alert('Asignatura registrada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al registrar: ' + error));
+        });
+
+        // READ
+        document.getElementById('asignaturaFormGet').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_a = document.getElementById('get_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/asignaturas/${cod_a}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    // Si la asignatura es encontrada, llenar el formulario de actualización con los datos
+                    if (data && data.data) {
+                        const asignatura = data.data;
+                        document.getElementById('update_cod_a').value = asignatura.cod_a;
+                        document.getElementById('update_nom_a').value = asignatura.nom_a;
+                        document.getElementById('update_int_h').value = asignatura.int_h;
+                        document.getElementById('update_creditos').value = asignatura.creditos;
+                    } else {
+                        alert('Asignatura no encontrada.');
+                    }
+                })
+                .catch(error => alert('Error al buscar asignatura: ' + error));
+        });
+
+        // UPDATE
+        document.getElementById('asignaturaFormUpdate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const asignatura = {
+                cod_a: document.getElementById('update_cod_a').value,
+                nom_a: document.getElementById('update_nom_a').value,
+                int_h: document.getElementById('update_int_h').value,
+                creditos: document.getElementById('update_creditos').value,
+            };
+
+            fetch(`http://127.0.0.1:3000/asignaturas/${asignatura.cod_a}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(asignatura),
+            })
+                .then(response => response.json())
+                .then(data => alert('Asignatura actualizada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al actualizar: ' + error));
+        });
+
+        // DELETE
+        document.getElementById('asignaturaFormDelete').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_a = document.getElementById('delete_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/asignaturas/${cod_a}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => alert('Asignatura eliminada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al eliminar: ' + error));
+        });
+
+        // GET ALL
+        document.getElementById('asignaturaFormGetAll').addEventListener('click', function () {
+            fetch('http://127.0.0.1:3000/asignaturas', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    // Verificar si se obtuvo correctamente la lista
+                    if (data && data.length > 0) {
+                        const asignaturasList = document.getElementById('asignaturasList');
+                        asignaturasList.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                        // Recorrer las asignaturas y agregarlas al contenedor
+                        data.forEach(asignatura => {
+                            const asignaturaItem = document.createElement('div');
+                            asignaturaItem.innerHTML = `
+                                <p><strong>Código:</strong> ${asignatura.cod_a}</p>
+                                <p><strong>Nombre:</strong> ${asignatura.nom_a}</p>
+                                <p><strong>Horas de Instrucción:</strong> ${asignatura.int_h}</p>
+                                <p><strong>Créditos:</strong> ${asignatura.creditos}</p>
+                                <hr>
+                            `;
+                            asignaturasList.appendChild(asignaturaItem);
+                        });
+                    } else {
+                        alert('No se encontraron asignaturas.');
+                    }
+                })
+                .catch(error => alert('Error al listar asignaturas: ' + error));
+        });
+    </script>
+</body>
+
+</html>

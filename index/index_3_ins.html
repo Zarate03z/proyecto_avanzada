@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inscripciones</title>
+    <link rel="stylesheet" type="text/css" href="styless_3_ins.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gestión de Inscripciones</h1>
+
+        <!-- Formulario para Crear Inscripción -->
+        <h2>Registrar Inscripción</h2>
+        <form id="inscripcionFormCreate">
+            <label for="create_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="create_cod_e" name="create_cod_e" required><br>
+            <label for="create_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="create_cod_a" name="create_cod_a" required><br>
+            <label for="create_id_p">ID Profesor:</label><br>
+            <input type="text" id="create_id_p" name="create_id_p" required><br>
+            <label for="create_grupo">Grupo:</label><br>
+            <input type="text" id="create_grupo" name="create_grupo" required><br>
+            <label for="create_n1">Nota 1:</label><br>
+            <input type="number" id="create_n1" name="create_n1" required><br>
+            <label for="create_n2">Nota 2:</label><br>
+            <input type="number" id="create_n2" name="create_n2" required><br>
+            <label for="create_n3">Nota 3:</label><br>
+            <input type="number" id="create_n3" name="create_n3" required><br>
+            <input type="submit" value="Registrar">
+        </form>
+
+        <!-- Formulario para Obtener Inscripción -->
+        <h2>Buscar Inscripción</h2>
+        <form id="inscripcionFormGet">
+            <label for="get_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="get_cod_e" name="get_cod_e" required><br>
+            <label for="get_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="get_cod_a" name="get_cod_a" required><br>
+            <input type="submit" value="Buscar">
+        </form>
+
+        <!-- Formulario para Actualizar Inscripción -->
+        <h2>Actualizar Inscripción</h2>
+        <form id="inscripcionFormUpdate">
+            <label for="update_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="update_cod_e" name="update_cod_e" required><br>
+            <label for="update_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="update_cod_a" name="update_cod_a" required><br>
+            <label for="update_id_p">ID Profesor:</label><br>
+            <input type="text" id="update_id_p" name="update_id_p" required><br>
+            <label for="update_grupo">Grupo:</label><br>
+            <input type="text" id="update_grupo" name="update_grupo" required><br>
+            <label for="update_n1">Nota 1:</label><br>
+            <input type="number" id="update_n1" name="update_n1" required><br>
+            <label for="update_n2">Nota 2:</label><br>
+            <input type="number" id="update_n2" name="update_n2" required><br>
+            <label for="update_n3">Nota 3:</label><br>
+            <input type="number" id="update_n3" name="update_n3" required><br>
+            <input type="submit" value="Actualizar">
+        </form>
+
+        <!-- Formulario para Eliminar Inscripción -->
+        <h2>Eliminar Inscripción</h2>
+        <form id="inscripcionFormDelete">
+            <label for="delete_cod_e">Código del Estudiante:</label><br>
+            <input type="text" id="delete_cod_e" name="delete_cod_e" required><br>
+            <label for="delete_cod_a">Código de la Asignatura:</label><br>
+            <input type="text" id="delete_cod_a" name="delete_cod_a" required><br>
+            <input type="submit" value="Eliminar">
+        </form>
+
+        <!-- Botón para Obtener Todas las Inscripciones -->
+        <h2>Obtener Todas las Inscripciones</h2>
+        <button id="inscripcionFormGetAll">Listar Inscripciones</button>
+    </div>
+
+    <script>
+        // CREATE
+        document.getElementById('inscripcionFormCreate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const inscripcion = {
+                cod_e: document.getElementById('create_cod_e').value,
+                cod_a: document.getElementById('create_cod_a').value,
+                id_p: document.getElementById('create_id_p').value,
+                grupo: document.getElementById('create_grupo').value,
+                n1: document.getElementById('create_n1').value,
+                n2: document.getElementById('create_n2').value,
+                n3: document.getElementById('create_n3').value,
+            };
+
+            fetch('http://127.0.0.1:3000/inscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inscripcion),
+            })
+                .then(response => response.json())
+                .then(data => alert('Inscripción registrada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al registrar: ' + error));
+        });
+
+        // READ
+        document.getElementById('inscripcionFormGet').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_e = document.getElementById('get_cod_e').value;
+            const cod_a = document.getElementById('get_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/inscribe/${cod_e}/${cod_a}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.data) {
+                        const inscripcion = data.data;
+                        document.getElementById('update_cod_e').value = inscripcion.cod_e;
+                        document.getElementById('update_cod_a').value = inscripcion.cod_a;
+                        document.getElementById('update_id_p').value = inscripcion.id_p;
+                        document.getElementById('update_grupo').value = inscripcion.grupo;
+                        document.getElementById('update_n1').value = inscripcion.n1;
+                        document.getElementById('update_n2').value = inscripcion.n2;
+                        document.getElementById('update_n3').value = inscripcion.n3;
+                    } else {
+                        alert('Inscripción no encontrada.');
+                    }
+                })
+                .catch(error => alert('Error al buscar inscripción: ' + error));
+        });
+
+        // UPDATE
+        document.getElementById('inscripcionFormUpdate').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const inscripcion = {
+                cod_e: document.getElementById('update_cod_e').value,
+                cod_a: document.getElementById('update_cod_a').value,
+                id_p: document.getElementById('update_id_p').value,
+                grupo: document.getElementById('update_grupo').value,
+                n1: document.getElementById('update_n1').value,
+                n2: document.getElementById('update_n2').value,
+                n3: document.getElementById('update_n3').value,
+            };
+
+            fetch(`http://127.0.0.1:3000/inscribe/${inscripcion.cod_e}/${inscripcion.cod_a}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inscripcion),
+            })
+                .then(response => response.json())
+                .then(data => alert('Inscripción actualizada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al actualizar: ' + error));
+        });
+
+        // DELETE
+        document.getElementById('inscripcionFormDelete').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const cod_e = document.getElementById('delete_cod_e').value;
+            const cod_a = document.getElementById('delete_cod_a').value;
+
+            fetch(`http://127.0.0.1:3000/inscribe/${cod_e}/${cod_a}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => alert('Inscripción eliminada: ' + JSON.stringify(data)))
+                .catch(error => alert('Error al eliminar: ' + error));
+        });
+
+        // GET ALL
+        document.getElementById('inscripcionFormGetAll').addEventListener('click', function () {
+            fetch('http://127.0.0.1:3000/inscribe', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const inscripcionesList = document.getElementById('inscripcionesList');
+                        inscripcionesList.innerHTML = '';
+
+                        data.forEach(inscripcion => {
+                            const inscripcionItem = document.createElement('div');
+                            inscripcionItem.innerHTML = `
+                                <p><strong>Código Estudiante:</strong> ${inscripcion.cod_e}</p>
+                                <p><strong>Código Asignatura:</strong> ${inscripcion.cod_a}</p>
+                                <p><strong>ID Profesor:</strong> ${inscripcion.id_p}</p>
+                                <p><strong>Grupo:</strong> ${inscripcion.grupo}</p>
+                                <p><strong>Nota 1:</strong> ${inscripcion.n1}</p>
+                                <p><strong>Nota 2:</strong> ${inscripcion.n2}</p>
+                                <p><strong>Nota 3:</strong> ${inscripcion.n3}</p>
+                                <hr>
+                            `;
+                            inscripcionesList.appendChild(inscripcionItem);
+                        });
+                    } else {
+                        alert('No se encontraron inscripciones.');
+                    }
+                })
+                .catch(error => alert('Error al listar inscripciones: ' + error));
+        });
+    </script>
+</body>
+
+</html>
